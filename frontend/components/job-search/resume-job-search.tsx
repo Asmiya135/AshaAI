@@ -1,0 +1,201 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { FileUp, Search, X } from "lucide-react"
+import type { JobSearchFilters } from "@/types/job-types"
+
+interface ResumeJobSearchProps {
+  onSearch: (JobSearchFilters: any) => void
+}
+
+export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
+  const [file, setFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [extractedKeywords, setExtractedKeywords] = useState<string[]>([])
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0])
+      handleResumeUpload(e.target.files[0])
+    }
+  }
+
+  const handleResumeUpload = async (file: File) => {
+    setIsUploading(true)
+
+    // Simulate file upload and processing
+    setTimeout(() => {
+      setIsUploading(false)
+      setIsProcessing(true)
+
+      // Simulate keyword extraction
+      setTimeout(() => {
+        setIsProcessing(false)
+        // Mock extracted keywords based on common resume terms
+        const mockKeywords = [
+          "JavaScript",
+          "React",
+          "Node.js",
+          "Project Management",
+          "UI/UX Design",
+          "Data Analysis",
+          "Team Leadership",
+          "Product Development",
+          "Customer Relations",
+          "Marketing Strategy",
+        ]
+
+        // Randomly select 5-8 keywords to simulate real extraction
+        const shuffled = [...mockKeywords].sort(() => 0.5 - Math.random())
+        setExtractedKeywords(shuffled.slice(0, Math.floor(Math.random() * 4) + 5))
+      }, 2000)
+    }, 1500)
+  }
+
+  const handleRemoveKeyword = (keyword: string) => {
+    setExtractedKeywords(extractedKeywords.filter((k) => k !== keyword))
+  }
+
+  const handleMatchJobs = () => {
+    if (extractedKeywords.length === 0) {
+      alert("Please upload a resume to extract keywords first")
+      return
+    }
+
+    // Create search filters based on extracted keywords
+    const filters: JobSearchFilters = {
+      position: extractedKeywords.slice(0, 2).join(" "), // Use first two keywords for position
+      company: "",
+      location: "",
+      experience: [0, 10],
+      ageRange: [18, 60],
+      workLocationType: "",
+      jobType: "",
+      keywords: extractedKeywords, // Add keywords to filters
+    }
+
+    onSearch(filters)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="mt-12 bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 rounded-xl border border-emerald-800/30 backdrop-blur-sm overflow-hidden shadow-lg shadow-emerald-900/20 p-6"
+    >
+      <h2 className="text-2xl font-bold text-white mb-4">Search Jobs According to Resume</h2>
+      <p className="text-gray-300 mb-6">
+        Upload your resume and we'll extract relevant keywords to find job matches that align with your skills and
+        experience.
+      </p>
+
+      <div className="space-y-6">
+        <div className="border-2 border-dashed border-emerald-800/50 rounded-lg p-6 text-center">
+          <input
+            type="file"
+            id="resume-upload"
+            className="hidden"
+            accept=".pdf,.doc,.docx"
+            onChange={handleFileChange}
+          />
+
+          {!file && !isUploading && !isProcessing ? (
+            <div>
+              <div className="h-16 w-16 bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileUp className="h-8 w-8 text-emerald-400" />
+              </div>
+              <p className="text-gray-300 mb-4">Drag and drop your resume here, or click to browse</p>
+              <Button
+                onClick={() => document.getElementById("resume-upload")?.click()}
+                className="bg-emerald-700 hover:bg-emerald-600 text-white"
+              >
+                Upload Resume
+              </Button>
+            </div>
+          ) : (
+            <div>
+              {isUploading ? (
+                <div className="flex flex-col items-center">
+                  <div className="h-12 w-12 rounded-full border-4 border-emerald-800/50 border-t-emerald-500 animate-spin mb-4"></div>
+                  <p className="text-emerald-300">Uploading resume...</p>
+                </div>
+              ) : isProcessing ? (
+                <div className="flex flex-col items-center">
+                  <div className="h-12 w-12 rounded-full border-4 border-emerald-800/50 border-t-emerald-500 animate-spin mb-4"></div>
+                  <p className="text-emerald-300">Extracting keywords...</p>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <div className="h-10 w-10 bg-emerald-900/50 rounded-full flex items-center justify-center">
+                      <FileUp className="h-5 w-5 text-emerald-400" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-white font-medium">{file?.name}</p>
+                      <p className="text-gray-400 text-sm">
+                        {file?.size ? (file.size / 1024 / 1024).toFixed(2) : "0"} MB
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-auto text-gray-400 hover:text-white hover:bg-emerald-800/50"
+                      onClick={() => {
+                        setFile(null)
+                        setExtractedKeywords([])
+                      }}
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+
+                  <div className="mt-6">
+                    <Label className="text-white mb-2 block">Extracted Keywords</Label>
+                    <div className="flex flex-wrap gap-2 mt-2 min-h-[60px] bg-emerald-950/50 rounded-md p-3 border border-emerald-800/50">
+                      {extractedKeywords.length > 0 ? (
+                        extractedKeywords.map((keyword, index) => (
+                          <Badge
+                            key={index}
+                            variant="outline"
+                            className="bg-emerald-800/50 text-emerald-300 border-emerald-700/50 flex items-center gap-1"
+                          >
+                            {keyword}
+                            <button
+                              className="ml-1 text-emerald-300 hover:text-white"
+                              onClick={() => handleRemoveKeyword(keyword)}
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </Badge>
+                        ))
+                      ) : (
+                        <p className="text-gray-400 text-sm">No keywords extracted yet</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={handleMatchJobs}
+                    className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    disabled={extractedKeywords.length === 0}
+                  >
+                    <Search className="h-5 w-5 mr-2" />
+                    Match Jobs
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
