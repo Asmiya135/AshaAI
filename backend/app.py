@@ -3,11 +3,14 @@ from flask_cors import CORS
 import requests
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # LinkedIn API configuration
-API_KEY = "680479f50addec451d932417"  # In production, store this in environment variables
+API_KEY = os.getenv('API_KEY')#API key from environment variable
+  # In production, store this in environment variables
 LINKEDIN_API_URL = "https://api.scrapingdog.com/linkedinjobs"
 
 # Mapping of frontend filter values to LinkedIn API parameters
@@ -254,4 +257,4 @@ def transform_linkedin_jobs(linkedin_jobs, experience_range):
 if __name__ == '__main__':
     # Get port from environment variable or use 5000 as default
     port = int(os.environ.get('PORT', 5000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=False, host='0.0.0.0', port=port)
