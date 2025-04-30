@@ -21,3 +21,5 @@ export interface JobListing {
   postedDate: string
   applyUrl: string
 }
+
+
