@@ -72,6 +72,9 @@ LOCATION_MAPPING = {
         # Default to US-wide for remote
     "": None
 }
+@app.route('/api/test', methods=['GET'])
+def test():
+    return jsonify({"message": "API is working!"}),200
 
 @app.route('/api/search-jobs', methods=['POST'])
 def search_jobs():
