@@ -293,7 +293,7 @@ export function JobSearch({ onSearch }: JobSearchProps) {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
       >
-        <div className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 rounded-xl border border-emerald-800/30 backdrop-blur-sm p-5">
+        {/* <div className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 rounded-xl border border-emerald-800/30 backdrop-blur-sm p-5">
           <div className="h-12 w-12 rounded-lg bg-emerald-900/70 flex items-center justify-center mb-4">
             <Search className="h-6 w-6 text-emerald-400" />
           </div>
@@ -301,9 +301,9 @@ export function JobSearch({ onSearch }: JobSearchProps) {
           <p className="text-gray-300 text-sm">
             Our AI analyzes thousands of job listings to find the perfect match for your skills and preferences.
           </p>
-        </div>
+        </div> */}
 
-        <div className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 rounded-xl border border-emerald-800/30 backdrop-blur-sm p-5">
+        {/* <div className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 rounded-xl border border-emerald-800/30 backdrop-blur-sm p-5">
           <div className="h-12 w-12 rounded-lg bg-emerald-900/70 flex items-center justify-center mb-4">
             <MapPin className="h-6 w-6 text-emerald-400" />
           </div>
@@ -312,9 +312,9 @@ export function JobSearch({ onSearch }: JobSearchProps) {
             Find jobs that match your location preferences, whether you're looking for remote, hybrid, or on-site
             opportunities.
           </p>
-        </div>
+        </div> */}
 
-        <div className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 rounded-xl border border-emerald-800/30 backdrop-blur-sm p-5">
+        {/* <div className="bg-gradient-to-br from-emerald-900/40 to-emerald-950/40 rounded-xl border border-emerald-800/30 backdrop-blur-sm p-5">
           <div className="h-12 w-12 rounded-lg bg-emerald-900/70 flex items-center justify-center mb-4">
             <Clock className="h-6 w-6 text-emerald-400" />
           </div>
@@ -322,7 +322,7 @@ export function JobSearch({ onSearch }: JobSearchProps) {
           <p className="text-gray-300 text-sm">
             Get access to the latest job postings with real-time updates from multiple sources and job boards.
           </p>
-        </div>
+        </div> */}
       </motion.div>
     </div>
   )

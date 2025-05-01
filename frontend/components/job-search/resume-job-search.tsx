@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -7,7 +8,9 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { FileUp, Search, X } from "lucide-react"
+import { AlertCircle, FileUp, Search, X } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { ResumeJobSearchResults } from "./resume-job-search-results"
 import type { JobSearchFilters } from "@/types/job-types"
 
 interface ResumeJobSearchProps {
@@ -19,44 +22,78 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [extractedKeywords, setExtractedKeywords] = useState<string[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [results, setResults] = useState<any | null>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0])
-      handleResumeUpload(e.target.files[0])
+      setError(null)
+      setResults(null)
+      // Clear any previous results when a new file is selected
+      setExtractedKeywords([])
     }
   }
 
-  const handleResumeUpload = async (file: File) => {
-    setIsUploading(true)
+  const handleResumeUpload = async () => {
+    if (!file) {
+      setError("Please select a file first")
+      return
+    }
 
-    // Simulate file upload and processing
-    setTimeout(() => {
+    setError(null)
+    setIsUploading(true)
+    setIsProcessing(false)
+    setResults(null)
+
+    try {
+      // Create form data for the file upload
+      const formData = new FormData()
+      formData.append('resume', file)
+
+      // Upload to the backend
+      const response = await fetch('http://localhost:5000/api/process-resume', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to process resume')
+      }
+
       setIsUploading(false)
       setIsProcessing(true)
 
-      // Simulate keyword extraction
-      setTimeout(() => {
-        setIsProcessing(false)
-        // Mock extracted keywords based on common resume terms
-        const mockKeywords = [
-          "JavaScript",
-          "React",
-          "Node.js",
-          "Project Management",
-          "UI/UX Design",
-          "Data Analysis",
-          "Team Leadership",
-          "Product Development",
-          "Customer Relations",
-          "Marketing Strategy",
-        ]
+      // Process the results
+      const data = await response.json()
+      
+      // Extract keywords from job suggestions
+      const keywords = data.job_suggestions.flatMap((suggestion: any) => {
+        // Extract keywords from job titles and reasons
+        const titleWords = suggestion.title.split(/\s+/).filter((word: string) => word.length > 3)
+        const reasonWords = suggestion.reason
+          .split(/\s+/)
+          .filter((word: string) => word.length > 3 && !titleWords.includes(word))
+          .slice(0, 5) // Limit reason words to avoid too many keywords
+        
+        return [...titleWords, ...reasonWords]
+      })
+      
+      // Remove duplicates and limit to 10 keywords
+      // const uniqueKeywords = [...new Set(keywords)].slice(0, 10)
+      const uniqueKeywords: string[] = [...new Set(keywords as string[])].slice(0, 10);
 
-        // Randomly select 5-8 keywords to simulate real extraction
-        const shuffled = [...mockKeywords].sort(() => 0.5 - Math.random())
-        setExtractedKeywords(shuffled.slice(0, Math.floor(Math.random() * 4) + 5))
-      }, 2000)
-    }, 1500)
+      setExtractedKeywords(uniqueKeywords)
+      setResults(data)
+      setIsProcessing(false)
+
+    } catch (err: any) {
+      setIsUploading(false)
+      setIsProcessing(false)
+      setError(err.message || 'An error occurred while processing your resume')
+      console.error('Resume processing error:', err)
+    }
   }
 
   const handleRemoveKeyword = (keyword: string) => {
@@ -65,7 +102,7 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
 
   const handleMatchJobs = () => {
     if (extractedKeywords.length === 0) {
-      alert("Please upload a resume to extract keywords first")
+      setError("Please upload a resume to extract keywords first")
       return
     }
 
@@ -78,7 +115,7 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
       ageRange: [18, 60],
       workLocationType: "",
       jobType: "",
-      keywords: extractedKeywords, // Add keywords to filters
+      //keywords: extractedKeywords, // Add keywords to filters
     }
 
     onSearch(filters)
@@ -96,6 +133,14 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
         Upload your resume and we'll extract relevant keywords to find job matches that align with your skills and
         experience.
       </p>
+
+      {error && (
+        <Alert variant="destructive" className="mb-6 bg-red-900/30 border-red-800/50 text-red-200">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       <div className="space-y-6">
         <div className="border-2 border-dashed border-emerald-800/50 rounded-lg p-6 text-center">
@@ -130,7 +175,7 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
               ) : isProcessing ? (
                 <div className="flex flex-col items-center">
                   <div className="h-12 w-12 rounded-full border-4 border-emerald-800/50 border-t-emerald-500 animate-spin mb-4"></div>
-                  <p className="text-emerald-300">Extracting keywords...</p>
+                  <p className="text-emerald-300">Analyzing resume and finding jobs...</p>
                 </div>
               ) : (
                 <div>
@@ -151,13 +196,14 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
                       onClick={() => {
                         setFile(null)
                         setExtractedKeywords([])
+                        setResults(null)
                       }}
                     >
                       <X className="h-5 w-5" />
                     </Button>
                   </div>
 
-                  <div className="mt-6">
+                  {/* <div className="mt-6">
                     <Label className="text-white mb-2 block">Extracted Keywords</Label>
                     <div className="flex flex-wrap gap-2 mt-2 min-h-[60px] bg-emerald-950/50 rounded-md p-3 border border-emerald-800/50">
                       {extractedKeywords.length > 0 ? (
@@ -180,22 +226,37 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
                         <p className="text-gray-400 text-sm">No keywords extracted yet</p>
                       )}
                     </div>
-                  </div>
+                  </div> */}
 
-                  <Button
-                    onClick={handleMatchJobs}
-                    className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white"
-                    disabled={extractedKeywords.length === 0}
-                  >
-                    <Search className="h-5 w-5 mr-2" />
-                    Match Jobs
-                  </Button>
+                  {!results ? (
+                    <Button
+                      onClick={handleResumeUpload}
+                      className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    >
+                      <Search className="h-5 w-5 mr-2" />
+                      Analyze Resume
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleMatchJobs}
+                      className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white"
+                      disabled={extractedKeywords.length === 0}
+                    >
+                      <Search className="h-5 w-5 mr-2" />
+                      Match Jobs
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
           )}
         </div>
       </div>
+
+      {/* Results Section */}
+      {results && (
+        <ResumeJobSearchResults results={results} />
+      )}
     </motion.div>
   )
 }
