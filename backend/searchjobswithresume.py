@@ -283,7 +283,7 @@ def redact_pii(text):
     analyzer_results = analyzer.analyze(text=text, language="en")
     
     # Entities we want to mask
-    sensitive_entities = ["NAME", "EMAIL_ADDRESS", "PHONE_NUMBER", "CREDIT_CARD", "US_SSN", 
+    sensitive_entities = ["NAME","PERSON", "EMAIL_ADDRESS", "PHONE_NUMBER", "CREDIT_CARD", "US_SSN", 
                           "US_BANK_NUMBER", "US_DRIVER_LICENSE", "US_PASSPORT"]
     
     # Filter only sensitive entities
