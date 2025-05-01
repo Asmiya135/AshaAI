@@ -10,7 +10,7 @@ export async function processResume(resumeFile: File) {
     formData.append('resume', resumeFile)
   
     try {
-      const response = await fetch('http://localhost:5000/api/process-resume', {
+      const response = await fetch('https://ashaai-jobbot.onrender.com/api/process-resume', {
         method: 'POST',
         body: formData,
       })

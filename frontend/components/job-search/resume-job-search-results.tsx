@@ -64,7 +64,7 @@ export function ResumeJobSearchResults({ results }: ResumeJobSearchResultsProps)
 //   };
 const searchLinkedInJobs = async (jobTitle: string) => {
     try {
-      const response = await fetch('http://localhost:5000/api/search-linkedin-jobs', {
+      const response = await fetch('https://ashaai-jobbot.onrender.com/api/search-linkedin-jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
