@@ -35,7 +35,7 @@ export async function processResume(resumeFile: File) {
    */
   export async function searchLinkedInJobs(jobTitle: string, location: string = 'None') {
     try {
-      const response = await fetch('/api/search-linkedin-jobs', {
+      const response = await fetch('https://ashaai-jobbot.onrender.com/api/search-linkedin-jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
