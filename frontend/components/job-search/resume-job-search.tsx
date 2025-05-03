@@ -52,7 +52,7 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
       formData.append('resume', file)
 
       // Upload to the backend
-      const response = await fetch('http://localhost:5000/api/process-resume', {
+      const response = await fetch('http://localhost:5001/api/process-resume', {
         method: 'POST',
         body: formData,
       })
@@ -100,27 +100,35 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
     setExtractedKeywords(extractedKeywords.filter((k) => k !== keyword))
   }
 
+  // const handleMatchJobs = () => {
+  //   if (extractedKeywords.length === 0) {
+  //     setError("Please upload a resume to extract keywords first")
+  //     return
+  //   }
+
+  //   // Create search filters based on extracted keywords
+  //   const filters: JobSearchFilters = {
+  //     position: extractedKeywords.slice(0, 2).join(" "), // Use first two keywords for position
+  //     company: "",
+  //     location: "",
+  //     experience: [0, 10],
+  //     ageRange: [18, 60],
+  //     workLocationType: "",
+  //     jobType: "",
+  //     //keywords: extractedKeywords, // Add keywords to filters
+  //   }
+
+  //   onSearch(filters)
+  // }
   const handleMatchJobs = () => {
-    if (extractedKeywords.length === 0) {
-      setError("Please upload a resume to extract keywords first")
+    if (!results || !results.linkedin_jobs || !results.linkedin_jobs.url_scraped) {
+      setError("No LinkedIn URL available")
       return
     }
 
-    // Create search filters based on extracted keywords
-    const filters: JobSearchFilters = {
-      position: extractedKeywords.slice(0, 2).join(" "), // Use first two keywords for position
-      company: "",
-      location: "",
-      experience: [0, 10],
-      ageRange: [18, 60],
-      workLocationType: "",
-      jobType: "",
-      //keywords: extractedKeywords, // Add keywords to filters
-    }
-
-    onSearch(filters)
+    // Directly open the LinkedIn URL from the results
+    window.open(results.linkedin_jobs.url_scraped, "_blank")
   }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

@@ -28,7 +28,8 @@ interface ResumeJobSearchResultsProps {
     ocr_text: string;
     masked_text: string;
     job_suggestions: JobSuggestion[];
-    linkedin_jobs: Job[] | { error: string };
+    // linkedin_jobs: Job[] | { error: string };
+    linkedin_jobs: any;
   };
 }
 
@@ -37,34 +38,9 @@ export function ResumeJobSearchResults({ results }: ResumeJobSearchResultsProps)
   const [showFullResume, setShowFullResume] = useState(false)
   const [linkedinJobs, setLinkedinJobs] = useState<Job[] | { error: string }>(results.linkedin_jobs);
 
-  // Function to search LinkedIn jobs for a specific job title
-//   const searchLinkedInJobs = async (jobTitle: string) => {
-//     try {
-//       const response = await fetch('http://localhost:5000/api/search-linkedin-jobs', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ jobTitle }),
-//       });
-      
-//       if (!response.ok) {
-//         throw new Error('Failed to fetch LinkedIn jobs');
-//       }
-      
-//       const data = await response.json();
-//       console.log("LinkedIn jobs:", data);
-//       // You would update state here with the jobs
-//       setLinkedinJobs(data); // ✅ Store in state
-//     setActiveTab("linkedin"); // Optional: switch tab after search
-//     } catch (error) {
-//       console.error("Error searching LinkedIn jobs:", error);
-//       setLinkedinJobs({ error: "Failed to fetch jobs. Please try again later." });
-//     }
-//   };
 const searchLinkedInJobs = async (jobTitle: string) => {
     try {
-      const response = await fetch('https://ashaai-jobbot.onrender.com/api/search-linkedin-jobs', {
+      const response = await fetch('http://localhost:5001/api/search-linkedin-jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,15 +54,15 @@ const searchLinkedInJobs = async (jobTitle: string) => {
       
       const data = await response.json();
       console.log("LinkedIn jobs:", data);
-      
+      setLinkedinJobs(data);
       // If there's a URL in the response, open it in a new tab
       if (data.url_scraped) {
         window.open(data.url_scraped, "_blank");
-        return;
+        // return;
       }
       
       // Otherwise update state with the jobs data
-      setLinkedinJobs(data); // ✅ Store in state
+      // setLinkedinJobs(data); // ✅ Store in state
       setActiveTab("linkedin"); // Optional: switch tab after search
     } catch (error) {
       console.error("Error searching LinkedIn jobs:", error);
