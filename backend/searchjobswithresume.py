@@ -13,7 +13,7 @@ from flask_cors import CORS  # Import CORS
 from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__)
-CORS(app,origins="*")  # Enable CORS for all routes
+CORS(app)  # Enable CORS for all routes
 
 # Environment variables (replace with your actual keys in production)
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
