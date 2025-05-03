@@ -10,7 +10,7 @@ export async function processResume(resumeFile: File) {
     formData.append('resume', resumeFile)
   
     try {
-      const response = await fetch('https://ashai-jobsearchingwithresume.onrender.com/api/process-resume', {
+      const response = await fetch('https://ashaai-jobresume.onrender.com/api/process-resume', {
         method: 'POST',
         body: formData,
       })
@@ -35,7 +35,7 @@ export async function processResume(resumeFile: File) {
    */
   export async function searchLinkedInJobs(jobTitle: string, location: string = 'None') {
     try {
-      const response = await fetch('https://ashai-jobsearchingwithresume.onrender.com/api/search-linkedin-jobs', {
+      const response = await fetch('https://ashaai-jobresume.onrender.com/api/search-linkedin-jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

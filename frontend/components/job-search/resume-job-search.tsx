@@ -52,7 +52,7 @@ export function ResumeJobSearch({ onSearch }: ResumeJobSearchProps) {
       formData.append('resume', file)
 
       // Upload to the backend
-      const response = await fetch('https://ashai-jobsearchingwithresume.onrender.com/api/process-resume', {
+      const response = await fetch('https://ashaai-jobresume.onrender.com/api/process-resume', {
         method: 'POST',
         body: formData,
       })
