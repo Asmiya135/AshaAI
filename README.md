@@ -1,6 +1,6 @@
 # 💼 Women-Centric Job & Career Platform
 
-## 🌸 About Shiksha Shakti
+## 🌸 About Nari Shakti
 
 **Shiksha Shakti** is a women-first platform that helps users:
 - Discover personalized job opportunities from trusted sources
@@ -76,6 +76,13 @@ All while maintaining **privacy**, **inclusivity**, and **ethical AI practices**
 - Auto-detect + user-select language option
 
 ---
+
+### 7. AI CourseGen
+
+- **Custom Course Generation** – Users input topic, level, goal & current knowledge to instantly receive a **tailored course outline**.
+- **Structured Learning Path** – Automatically organized into **modules and subsections**, progressing from **basic to advanced**.
+- **YouTube Video Integration** – Each subsection includes **auto-attached, relevant videos** to enhance understanding through multimedia.
+
 
 ## 🔒 Ethics & Safeguards
 
