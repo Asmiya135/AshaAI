@@ -45,6 +45,9 @@ export function Navbar() {
           <Link href="/event-bot" className="text-gray-300 hover:text-white transition-colors">
             Event-Bot
           </Link>
+          <Link href="/ai-course-gen" className="text-gray-300 hover:text-white transition-colors">
+            CourseGen
+          </Link>
           <Link href="/faq-bot" className="text-gray-300 hover:text-white transition-colors">
             FAQs
           </Link>
@@ -89,6 +92,14 @@ export function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               Job-Bot
+            </Link>
+            
+            <Link
+              href="/ai-course-gen"
+              className="text-gray-300 hover:text-white transition-colors py-2"
+              onClick={() => setIsOpen(false)}
+            >
+              CourseGen
             </Link>
             <Link
               href="/event-bot"
